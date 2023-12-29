@@ -124,13 +124,21 @@ module Cohere
           end
         end
 
-        return safe_parse_json(response.body) unless server_sent_events_enabled
+        unless server_sent_events_enabled
+          return safe_parse_json_with_fallback_to_raw(response.body)
+        end
 
         raise IncompleteJSONReceivedError, partial_json if partial_json != ''
 
         results.map { |result| result[:event] }
       rescue Faraday::ServerError => e
         raise RequestError.new(e.message, request: e, payload:)
+      end
+
+      def safe_parse_json_with_fallback_to_raw(raw)
+        raw.to_s.lstrip.start_with?('{', '[') ? JSON.parse(raw) : raw
+      rescue JSON::ParserError
+        raw
       end
 
       def safe_parse_json(raw)

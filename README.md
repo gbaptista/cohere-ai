@@ -1,6 +1,6 @@
 # Cohere AI
 
-A Ruby gem for interacting with [Cohere AI](https://cohere.ai).
+A Ruby gem for interacting with [Cohere AI](https://cohere.com).
 
 ![The logo depicts a ruby with a liquid-like interior on a peach background. The gem has a flowing lava appearance, with swirls of red and pink suggesting movement, resembling molten rock. Darker red edges and a circular dark border frame this vibrant, fluid core.](https://raw.githubusercontent.com/gbaptista/assets/main/cohere-ai/cohere-ai-canvas.png)
 
@@ -754,9 +754,9 @@ mlp README.md -p 8076
 
 These resources and references may be useful throughout your learning process.
 
-- [Cohere AI Official Website](https://cohere.ai)
-- [Cohere AI Documentation](https://docs.cohere.ai)
-- [Cohere AI API Documentation](https://docs.cohere.ai/api/)
+- [Cohere AI Official Website](https://cohere.com)
+- [Cohere AI Documentation](https://docs.cohere.com/docs)
+- [Cohere AI API Reference](https://docs.cohere.com/reference/about)
 
 ## Disclaimer
 

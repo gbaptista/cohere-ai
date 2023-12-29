@@ -657,6 +657,7 @@ CohereError
 
 MissingAPIKeyError
 BlockWithoutServerSentEventsError
+IncompleteJSONReceivedError
 
 RequestError
 ```

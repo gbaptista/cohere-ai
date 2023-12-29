@@ -124,9 +124,7 @@ module Cohere
           end
         end
 
-        unless server_sent_events_enabled
-          return safe_parse_json_with_fallback_to_raw(response.body)
-        end
+        return safe_parse_json_with_fallback_to_raw(response.body) unless server_sent_events_enabled
 
         raise IncompleteJSONReceivedError, partial_json if partial_json != ''
 

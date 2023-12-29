@@ -6,7 +6,7 @@ module Cohere
     version: '1.0.0',
     author: 'gbaptista',
     summary: 'Interact with Cohere AI.',
-    description: "A Ruby gem for interacting with Cohere AI's large language models.",
+    description: "A Ruby gem for interacting with Cohere AI platform.",
     github: 'https://github.com/gbaptista/cohere-ai',
     gem_server: 'https://rubygems.org',
     license: 'MIT',

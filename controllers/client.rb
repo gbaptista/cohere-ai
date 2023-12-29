@@ -88,6 +88,8 @@ module Cohere
 
         method_to_call = request_method.to_s.strip.downcase.to_sym
 
+        partial_json = ''
+
         response = Faraday.new(request: @request_options) do |faraday|
           faraday.response :raise_error
         end.send(method_to_call) do |request|
@@ -105,16 +107,26 @@ module Cohere
                 raise_error.on_complete(env.merge(body: chunk))
               end
 
-              result = { event: safe_parse_json(chunk), raw: { chunk:, bytes:, env: } }
+              partial_json += chunk
 
-              callback.call(result[:event], result[:raw]) unless callback.nil?
+              parsed_json = safe_parse_json(partial_json)
 
-              results << result
+              if parsed_json
+                result = { event: parsed_json, raw: { chunk:, bytes:, env: } }
+
+                callback.call(result[:event], result[:raw]) unless callback.nil?
+
+                results << result
+
+                partial_json = ''
+              end
             end
           end
         end
 
         return safe_parse_json(response.body) unless server_sent_events_enabled
+
+        raise IncompleteJSONReceivedError, partial_json if partial_json != ''
 
         results.map { |result| result[:event] }
       rescue Faraday::ServerError => e
@@ -122,9 +134,9 @@ module Cohere
       end
 
       def safe_parse_json(raw)
-        raw.start_with?('{', '[') ? JSON.parse(raw) : raw
+        raw.to_s.lstrip.start_with?('{', '[') ? JSON.parse(raw) : nil
       rescue JSON::ParserError
-        raw
+        nil
       end
     end
   end

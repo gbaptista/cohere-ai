@@ -10,6 +10,7 @@ module Cohere
 
     class MissingAPIKeyError < CohereError; end
     class BlockWithoutServerSentEventsError < CohereError; end
+    class IncompleteJSONReceivedError < CohereError; end
 
     class RequestError < CohereError
       attr_reader :request, :payload

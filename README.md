@@ -9,7 +9,7 @@ A Ruby gem for interacting with [Cohere AI](https://cohere.com).
 ## TL;DR and Quick Start
 
 ```ruby
-gem 'cohere-ai', '~> 1.0.0'
+gem 'cohere-ai', '~> 1.0.1'
 ```
 
 ```ruby
@@ -87,11 +87,11 @@ Result:
 ### Installing
 
 ```sh
-gem install cohere-ai -v 1.0.0
+gem install cohere-ai -v 1.0.1
 ```
 
 ```sh
-gem 'cohere-ai', '~> 1.0.0'
+gem 'cohere-ai', '~> 1.0.1'
 ```
 
 ### Credentials
@@ -717,7 +717,7 @@ gem build cohere-ai.gemspec
 
 gem signin
 
-gem push cohere-ai-1.0.0.gem
+gem push cohere-ai-1.0.1.gem
 ```
 
 ### Updating the README

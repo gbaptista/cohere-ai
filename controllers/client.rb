@@ -3,7 +3,7 @@
 require 'faraday'
 require 'json'
 
-require_relative '../ports/dsl/cohere-ai/errors'
+require_relative '../components/errors'
 
 module Cohere
   module Controllers
@@ -23,7 +23,7 @@ module Cohere
                    end
 
         if @api_key.nil? && @address == "#{DEFAULT_ADDRESS}/"
-          raise MissingAPIKeyError, 'Missing API Key, which is required.'
+          raise Errors::MissingAPIKeyError, 'Missing API Key, which is required.'
         end
 
         @request_options = config.dig(:options, :connection, :request)
@@ -80,7 +80,7 @@ module Cohere
         url = "#{@address}#{path}"
 
         if !callback.nil? && !server_sent_events_enabled
-          raise BlockWithoutServerSentEventsError,
+          raise Errors::BlockWithoutServerSentEventsError,
                 'You are trying to use a block without Server Sent Events (SSE) enabled.'
         end
 
@@ -109,14 +109,16 @@ module Cohere
 
               partial_json += chunk
 
-              parsed_json = safe_parse_json(partial_json)
+              parsed_jsons = safe_parse_jsonl(partial_json)
 
-              if parsed_json
-                result = { event: parsed_json, raw: { chunk:, bytes:, env: } }
+              if parsed_jsons
+                parsed_jsons.each do |parsed_json|
+                  result = { event: parsed_json, raw: { chunk:, bytes:, env: } }
 
-                callback.call(result[:event], result[:raw]) unless callback.nil?
+                  callback.call(result[:event], result[:raw]) unless callback.nil?
 
-                results << result
+                  results << result
+                end
 
                 partial_json = ''
               end
@@ -126,11 +128,11 @@ module Cohere
 
         return safe_parse_json_with_fallback_to_raw(response.body) unless server_sent_events_enabled
 
-        raise IncompleteJSONReceivedError, partial_json if partial_json != ''
+        raise Errors::IncompleteJSONReceivedError, partial_json if partial_json != ''
 
         results.map { |result| result[:event] }
       rescue Faraday::ServerError => e
-        raise RequestError.new(e.message, request: e, payload:)
+        raise Errors::RequestError.new(e.message, request: e, payload:)
       end
 
       def safe_parse_json_with_fallback_to_raw(raw)
@@ -139,8 +141,8 @@ module Cohere
         raw
       end
 
-      def safe_parse_json(raw)
-        raw.to_s.lstrip.start_with?('{', '[') ? JSON.parse(raw) : nil
+      def safe_parse_jsonl(raw)
+        raw.to_s.lstrip.start_with?('{', '[') ? raw.split("\n").map { |line| JSON.parse(line) } : raw
       rescue JSON::ParserError
         nil
       end

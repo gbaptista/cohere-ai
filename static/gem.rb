@@ -3,7 +3,7 @@
 module Cohere
   GEM = {
     name: 'cohere-ai',
-    version: '1.0.1',
+    version: '1.0.2',
     author: 'gbaptista',
     summary: 'Interact with Cohere AI.',
     description: 'A Ruby gem for interacting with Cohere AI platform.',
